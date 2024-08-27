@@ -1,9 +1,9 @@
-import { jest, beforeEach, describe, test, expect } from "@jest/globals";
+import { beforeEach, describe, test, expect, mock} from "bun:test"
 
-jest.unstable_mockModule("../db.js", () => ({
-  insertDB: jest.fn(),
-  getDB: jest.fn(),
-  saveDB: jest.fn(),
+mock.module("../db.js", () => ({
+  insertDB: mock(),
+  getDB: mock(),
+  saveDB: mock(),
 }));
 
 const { insertDB, getDB, saveDB } = await import("../db.js");
