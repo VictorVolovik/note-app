@@ -1,5 +1,5 @@
 {
-  "name": "intro-node-v3",
+  "name": "note-app",
   "version": "1.0.0",
   "main": "index.js",
   "bin": {
