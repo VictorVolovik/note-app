@@ -7,6 +7,7 @@ import {
   removeAllNotes,
   removeNote,
 } from "./notes.js";
+import { start } from "./server.js";
 
 const listNotes = (notes) => {
   notes.forEach(({ id, content, tags }, index) => {
@@ -89,12 +90,13 @@ yargs(hideBin(process.argv))
     (yargs) => {
       return yargs.positional("port", {
         describe: "port to bind on",
-        default: 5000,
+        default: 3000,
         type: "number",
       });
     },
     async (argv) => {
-      console.log(`launch website at port: ${argv.port}`);
+      const notes = await getAllNotes();
+      start(notes, argv.port);
     },
   )
   .command(
