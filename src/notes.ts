@@ -1,6 +1,7 @@
-import { insertDB, saveDB, getDB } from "./db.js";
+import type { Note } from "types/models";
+import { insertDB, saveDB, getDB } from "db";
 
-export const newNote = async (note, tags) => {
+export const newNote = async (note: Note["content"], tags: Note["tags"]) => {
   const data = {
     tags,
     content: note,
@@ -15,14 +16,14 @@ export const getAllNotes = async () => {
   return notes;
 };
 
-export const findNotes = async (filter) => {
+export const findNotes = async (filter: string) => {
   const notes = await getAllNotes();
   return notes.filter((note) =>
     note.content.toLowerCase().includes(filter.toLowerCase()),
   );
 };
 
-export const removeNote = async (id) => {
+export const removeNote = async (id: Note["id"]) => {
   const notes = await getAllNotes();
   const match = notes.find((note) => note.id === id);
 
