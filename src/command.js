@@ -21,6 +21,7 @@ const listNotes = (notes) => {
 };
 
 yargs(hideBin(process.argv))
+  .scriptName('note')
   .command(
     "new <note>",
     "create a new note",
