@@ -33,7 +33,9 @@ yargs(hideBin(process.argv))
     async (argv) => {
       const tags = argv.tags?.split(",").map((tag) => tag.trim()) ?? [];
       const note = argv.note.trim();
-      newNote(note, tags);
+      const createdNote = await newNote(note, tags);
+      console.log("New note created:");
+      listNotes([createdNote]);
     },
   )
   .option("tags", {
@@ -47,7 +49,11 @@ yargs(hideBin(process.argv))
     () => { },
     async () => {
       const notes = await getAllNotes();
-      listNotes(notes);
+      if (notes.length) {
+        listNotes(notes);
+      } else {
+        console.log("No notes yet");
+      }
     },
   )
   .command(
@@ -62,7 +68,11 @@ yargs(hideBin(process.argv))
     },
     async (argv) => {
       const matches = await findNotes(argv.filter);
-      listNotes(matches);
+      if(matches.length) {
+        listNotes(matches);
+      } else {
+        console.log("No notes found")
+      }
     },
   )
   .command(
@@ -105,6 +115,7 @@ yargs(hideBin(process.argv))
     () => { },
     async () => {
       removeAllNotes();
+      console.log('All notes removed')
     },
   )
   .demandCommand(1)
