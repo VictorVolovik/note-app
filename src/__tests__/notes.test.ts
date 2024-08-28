@@ -1,4 +1,4 @@
-import { beforeEach, describe, test, expect, mock} from "bun:test"
+import { beforeEach, describe, test, expect, mock } from "bun:test";
 
 mock.module("../db.js", () => ({
   insertDB: mock(),
@@ -6,7 +6,17 @@ mock.module("../db.js", () => ({
   saveDB: mock(),
 }));
 
-const { insertDB, getDB, saveDB } = await import("../db.js");
+const dbModuleMocked = await import("../db.js");
+const insertDB = dbModuleMocked.insertDB as JestMock.Mock<
+  typeof dbModuleMocked.insertDB
+>;
+const getDB = dbModuleMocked.getDB as JestMock.Mock<
+  typeof dbModuleMocked.getDB
+>;
+const saveDB = dbModuleMocked.saveDB as JestMock.Mock<
+  typeof dbModuleMocked.saveDB
+>;
+
 const { newNote, getAllNotes, removeNote } = await import("../notes.js");
 
 beforeEach(() => {
@@ -31,22 +41,24 @@ describe("cli app", () => {
   });
 
   test("getAllNotes returns all notes", async () => {
-    const db = {
-      notes: ["note1", "note2", "note3"],
-    };
-    getDB.mockResolvedValue(db);
+    const notes = [
+      { id: 1, content: "note 1", tags: [] },
+      { id: 2, content: "note 2", tags: [] },
+      { id: 3, content: "note 3", tags: [] },
+    ];
+    getDB.mockResolvedValue({ notes });
 
     const result = await getAllNotes();
-    expect(result).toEqual(db.notes);
+    expect(result).toEqual(notes);
   });
 
   test("removeNote does nothing if id is not found", async () => {
     const notes = [
-      { id: 1, content: "note 1" },
-      { id: 2, content: "note 2" },
-      { id: 3, content: "note 3" },
+      { id: 1, content: "note 1", tags: [] },
+      { id: 2, content: "note 2", tags: [] },
+      { id: 3, content: "note 3", tags: [] },
     ];
-    saveDB.mockResolvedValue(notes);
+    saveDB.mockResolvedValue({ notes });
 
     const idToRemove = 4;
     const result = await removeNote(idToRemove);

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
+    "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "node"
   }
