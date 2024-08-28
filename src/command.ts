@@ -1,5 +1,6 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import type { Note } from "types/models.js";
 import {
   findNotes,
   getAllNotes,
@@ -9,7 +10,7 @@ import {
 } from "./notes.js";
 import { start } from "./server.js";
 
-const listNotes = (notes) => {
+const listNotes = (notes: Note[]) => {
   notes.forEach(({ id, content, tags }, index) => {
     if (index > 0) {
       console.log("\n");
@@ -21,7 +22,12 @@ const listNotes = (notes) => {
 };
 
 yargs(hideBin(process.argv))
-  .scriptName('note')
+  .scriptName("note")
+  .option("tags", {
+    alias: "t",
+    type: "string",
+    description: "tags to add to the note",
+  })
   .command(
     "new <note>",
     "create a new note",
@@ -39,15 +45,10 @@ yargs(hideBin(process.argv))
       listNotes([createdNote]);
     },
   )
-  .option("tags", {
-    alias: "t",
-    type: "string",
-    description: "tags to add to the note",
-  })
   .command(
     "all",
     "get all notes",
-    () => { },
+    () => {},
     async () => {
       const notes = await getAllNotes();
       if (notes.length) {
@@ -69,10 +70,10 @@ yargs(hideBin(process.argv))
     },
     async (argv) => {
       const matches = await findNotes(argv.filter);
-      if(matches.length) {
+      if (matches.length) {
         listNotes(matches);
       } else {
-        console.log("No notes found")
+        console.log("No notes found");
       }
     },
   )
@@ -107,16 +108,16 @@ yargs(hideBin(process.argv))
     },
     async (argv) => {
       const notes = await getAllNotes();
-      start(notes, argv.port);
+      start(notes, String(argv.port));
     },
   )
   .command(
     "clean",
     "remove all notes",
-    () => { },
+    () => {},
     async () => {
       removeAllNotes();
-      console.log('All notes removed')
+      console.log("All notes removed");
     },
   )
   .demandCommand(1)
